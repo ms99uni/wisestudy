@@ -1,0 +1,218 @@
+﻿{% extends 'layout.html' %}
+{% set active_page='mathPage' -%}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row mb-4 mt-3">
+            <h1><a href={{ url_for('mathPage') }}>Mathematics</a> > <a href={{ url_for('mathPage') }}>{{ topic }}</a></h1>
+        </div>
+        <div class="row justify-content-center">
+            <h2><span class="text-success" id="correctCounter">0</span> <span id="totalCount">15</span> <span class="text-danger" id="wrongCounter">0</span></h2>
+        </div>
+        <div class="row justify-content-center d-flex">
+            <div id="excerciseBox" class="bg-light" value="{{exc_id}}">
+                <div id="questionBox">
+                    <h2 id="topNumber">12</h2>
+                    <div id="mathSymbol" style="float: right; display: block;margin-top: -20px;">
+                        <i id="mathSymbolIcon" class="fas fa-2x"></i>
+                    </div>
+                    <h2 id="bottomNumber">123</h2>
+                </div>
+                <hr />
+                <div class="answerBox">
+                    <input id="answerInput" class="form-control" value="" type="number" name="answer" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center d-flex">
+            <button id="progressButton" class="btn btn-success mt-3 mb-3">Check Answer!</button>
+            <button id="tryAgainButton" style="display:none;" class="btn btn-warning mt-3 mb-3">Try Again!</button>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+    var excerciseTopicMap = new Map([
+        [0, ["fa-times"]],
+        [1, ["fa-times"]],
+        [2, ["fa-divide"]],
+        [3, ["fa-divide"]],
+    ]);
+
+    var numOfCompletedExcercises = 0;
+    var maxExcercises = 15;
+    
+
+    function getRndInteger(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function updateExcerciseQuestion(topNumber, bottomNumber) {
+        $("#topNumber").text(topNumber);
+        $("#bottomNumber").text(bottomNumber);
+    }
+
+    function twoNumbersInRange(lowOne, limitOne, lowTwo, limitTwo) {
+        return [getRndInteger(lowOne, limitOne), getRndInteger(lowTwo, limitTwo)];
+    }
+
+    function generateExcercise() {
+        var excId = parseInt($("#excerciseBox").attr("value"));
+
+        switch (excId) {
+            case 0:
+                genMultExc0();
+                break;
+            case 1:
+                genMultExc1();
+                break;
+            case 2:
+                genDivExc();
+                break;
+            case 3:
+                genDivExc(100, 1000, 10, 100);
+            default:
+        }
+    }
+
+    function genMultExc0() {
+        var numbers = twoNumbersInRange(10, 100, 0, 10);
+        updateExcerciseQuestion(numbers[0], numbers[1]);
+    }
+
+    function genMultExc1() {
+        var numbers = twoNumbersInRange(100, 1000, 10, 100);
+        updateExcerciseQuestion(numbers[0], numbers[1]);
+    }
+
+    function genDivExc(dividendMin=100, dividendMax = 1000, divisorMin=1, divisorMax = 9) {
+
+        var divisor = getRndInteger(divisorMin, divisorMax);
+
+        var lowestMultiplier = Math.ceil(dividendMin / divisor);
+        var highestMultiplier = Math.floor(dividendMax / divisor);
+
+        var multiplier = getRndInteger(lowestMultiplier, highestMultiplier)
+
+        var dividend = divisor * multiplier;
+
+        updateExcerciseQuestion(dividend, divisor);
+
+        //return [dividend, divisor];
+
+    }
+
+    function multiplicationCorrectness(answer) {
+        var num1 = $("#topNumber").text();
+        var num2 = $("#bottomNumber").text();
+        return num1 * num2 == answer;
+    }
+
+    function divisionCorrectness(answer) {
+        var dividend = $("#topNumber").text();
+        var divisor = $("#bottomNumber").text();
+        return dividend / divisor == answer;
+    }
+
+    function checkCorrectness(answer) {
+        var excId = parseInt($("#excerciseBox").attr("value"));
+        switch (excId) {
+            case 0:
+            case 1:
+                return multiplicationCorrectness(answer);
+                break;
+            case 2:
+            case 3:
+                return divisionCorrectness(answer);
+                break;
+            default:
+        } 
+    }
+
+    $(document).on("keypress", "input", function (event) {
+        if (event.which == 13) {
+            if ($("#progressButton").is(":visible")) {
+                $("#progressButton").trigger("click");
+            }
+        }
+    });
+
+    function setMathIcon() {
+        var excId = parseInt($("#excerciseBox").attr("value"));
+        var icon = excerciseTopicMap.get(excId)[0];
+        $("#mathSymbolIcon").addClass(icon);
+    }
+
+    function setUpFirstExcercise() {
+        generateExcercise();
+        setMathIcon();
+    }
+
+    
+
+    setUpFirstExcercise();
+
+    function applaud() {
+        prevCount = parseInt($("#correctCounter").text());
+        prevCount += 1;
+        $("#correctCounter").text(prevCount);
+    }
+
+    function revealCorrect() {
+        prevCount = parseInt($("#wrongCounter").text());
+        prevCount += 1;
+        $("#wrongCounter").text(prevCount);
+
+        var excId = parseInt($("#excerciseBox").attr("value"));
+        var num1 = $("#topNumber").text();
+        var num2 = $("#bottomNumber").text();
+
+        switch (excId) {
+            case 0:
+            case 1:
+                alert("Ups, " + num1 + " x " + num2 + " = " + num1 * num2);
+                break;
+            case 2:
+            case 3:
+                alert("Ups, " + num1 + " / " + num2 + " = " + num1 / num2);
+                break;
+            default:
+        }
+    }
+
+    $("#tryAgainButton").click(function (event) {
+        location.reload();
+    });
+
+    $("#progressButton").click(function (event) {
+        var answer = $("#answerInput").val();
+        if (answer) {     
+
+            numOfCompletedExcercises += 1;
+
+            if (numOfCompletedExcercises == maxExcercises) {
+                alert("You are finished, congratulations!");
+                $("#progressButton").hide();
+                $("#tryAgainButton").show();
+            }
+
+            if (checkCorrectness(answer)) {
+                // correct answer 
+                applaud();
+                generateExcercise();
+            } else {
+                revealCorrect(); 
+                generateExcercise();
+            }
+
+            $("#answerInput").val("");
+
+        } else {
+            alert("Please type an answer.")
+        }
+    });
+</script>
+{% endblock %}

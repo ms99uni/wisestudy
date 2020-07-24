@@ -1,0 +1,8 @@
+#excerciseBox {
+    border-width: thick;
+    border-color: teal;
+    border-style: solid;
+    padding: 7px;
+    width: 150px;
+    border-radius:10px;
+}

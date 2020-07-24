@@ -1,0 +1,32 @@
+﻿{% extends "layout.html" %}
+
+{% block content %} 
+
+<div class="container-fluid">
+    <div class="row justify-content-center mb-5 mt-3">
+        <h1>Hi, Welcome To The WiseStudy Program Curriculum!</h1>
+    </div>
+    <div class="row justify-content-center mx-auto" style="max-width:70%;">
+        <div class="row row-cols-1 row-cols-md-2">
+        {% import 'curriculum_card.html' as cardMacro %}
+            {% for card in curriculum_deck %}
+                {{ cardMacro.curriculum_card(card.id, card.bg_color, card.header, card.title, card.text) }}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type="text/javascript">
+    $("#math-card").click(function () {
+        window.location.href = "/math";
+    });
+    $("#reading-card").click(function () {
+        window.location.href = "/reading";
+    })
+</script>
+
+{% endblock %}

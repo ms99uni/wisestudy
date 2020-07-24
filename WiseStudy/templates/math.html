@@ -1,0 +1,82 @@
+﻿{% extends "layout.html" %}
+{% set active_page='mathPage' -%}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-5 mt-3">
+        <h1>Mathematics</h1>
+    </div>
+    <div class="row">
+        <div class="list-group">
+            <form name="mathForm" method="post">
+                <div class="card">
+                    <div type="button" data-toggle="collapse" data-target="#multCollapse" class="card-header active topic list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <input hidden type="text" name="multTopic" value="Multiplication"/>
+                        Multiplication
+                        <span class="badge badge-success ml-5">NEW</span>
+                    </div>
+                    <div id="multCollapse" class="collapse show">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><button class="btn btn-link" type="submit" name="exc_id" value="0">1 to 2 digit numbers</button></li>
+                                <li class="list-group-item"><button class="btn btn-link" type="submit" name="exc_id" value="1">2 to 3 digit numbers</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div type="button" data-toggle="collapse" data-target="#divCollapse" class="card-header topic list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <input hidden type="text" name="divTopic" value="Division" />
+                        Division
+                        <span class="badge badge-success">NEW</span>
+                    </div>
+                    <div id="divCollapse" class="collapse">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><button class="btn btn-link" type="submit" name="exc_id" value="2">3 digit divided by 1 digit number (divisible)</button></li>
+                                <li class="list-group-item"><button class="btn btn-link" type="submit" name="exc_id" value="3">3 digit divided by 2 digit number (divisible)</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div type="button" data-toggle="collapse" data-target="#fracCollapse" class="card-header topic list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        Fractions
+                        <span class="badge badge-primary">Coming</span>
+                    </div>
+                    <div id="fracCollapse" class="collapse">
+                        <div class="card-body">
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type="text/javascript">
+    $(".topic").click(function (event) {
+        $(event.target).toggleClass("active");
+        var child = $(event.target).children(":first");
+
+        if (child.hasClass("badge-primary")) {
+            child.removeClass("badge-primary");
+            child.addClass("badge-light");
+        } else if(child.hasClass("badge-light")) {
+            child.removeClass("badge-light");
+            child.addClass("badge-primary");
+        }
+    });
+    $(".badge").click(function (event) {
+        $(event.target).parent().trigger("click");
+    });
+
+</script>
+
+{% endblock %}

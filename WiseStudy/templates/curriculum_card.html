@@ -1,0 +1,11 @@
+﻿{% macro curriculum_card(id, bg_clr, header, title, text) -%}
+    <div class="col mb-4">
+        <div id="{{ id }}" class="card text-white {{ bg_clr }} mx-auto" role="button" style="max-width:24rem;">
+            <div class="card-header">{{ header }}</div>
+            <div class="card-body">
+                <h5 class="card-title"> {{ title }}</h5>
+                <p> {{ text }} </p>
+            </div>
+        </div>
+    </div>
+{%- endmacro %}

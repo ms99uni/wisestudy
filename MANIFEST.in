@@ -1,0 +1,3 @@
+graft WiseStudy/static
+graft WiseStudy/templates
+global-exclude *.pyc
